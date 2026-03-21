@@ -9,16 +9,16 @@ const options = {
       description: "EDUmix API documentation",
     },
     servers: [
-      {
-        url: "http://localhost:8080",
-        description: "Local server",
-      },
-      {
-        //  added your render URL for production testing
-        url: "https://online-1-72ed.onrender.com",
-        description: "Production server",
-      },
-    ],
+  {
+    //  production first — Render Swagger will use this
+    url: "https://online-1-72ed.onrender.com",
+    description: "Production server",
+  },
+  {
+    url: "http://localhost:8080",
+    description: "Local server",
+  },
+],
     components: {
       securitySchemes: {
         bearerAuth: {

@@ -3,7 +3,7 @@ const app = express()
 const sequelize = require('../src/config/db');
 const cors = require("cors")
 require("dotenv").config()
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 5000
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("../src/config/swagger");
 
@@ -22,12 +22,12 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // auth
 app.use("/api/auth", require("../src/routers/auth.router"))
-// courses
-app.use("/api/courses", require("../src/routers/course.router"))
 // comments
 app.use("/api/comments", require("../src/routers/comment.router"))
 // profile
 app.use("/api/profile", require("../src/routers/profile.router"))
+// categories
+app.use("/api/categories", require("../src/routers/category.router"))
 
 app.get('/', (req, res) => {
   res.send('API is running successfully!');
@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 
 // only starts the server locally
 // on Vercel, it does NOT call app.listen() — Vercel handles that itself
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Server running on port ${port}`)
 })
 

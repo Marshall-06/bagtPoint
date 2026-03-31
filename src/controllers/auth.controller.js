@@ -15,13 +15,28 @@ exports.register = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+
+//register admin
+exports.registerAdmin = async (req, res) => {
+    try {
+        const { user, accessToken } =
+            await authService.registerAdmin(req.body);
+
+        res.status(201).json({
+            accessToken,
+            user: userResponseDTO(user)
+        });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 //login
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { identifier, password } = req.body;
 
         const { user, accessToken, refreshToken } =
-            await authService.login(email, password);
+            await authService.login(identifier, password);
 
         res.json({
             accessToken,

@@ -8,13 +8,14 @@ const User = sequelize.define("User", {
     primaryKey: true,
     allowNull: false
   },
-  phone_num: { type: DataTypes.STRING, allowNull: false },
-  email: { type: DataTypes.STRING, allowNull: false, unique: true },
+  phone_num: { type: DataTypes.STRING, allowNull: false, unique: true },
+  email: { type: DataTypes.STRING, allowNull: true, unique: true },
   password: { type: DataTypes.STRING, allowNull: false },
-  role: { type: DataTypes.ENUM("admin", "instructor", "user"), defaultValue: "user" },
+  role: { type: DataTypes.ENUM("admin", "owner", "user"), defaultValue: "user" },
 
-  // after registration, user can set name, username and avatar to profile
+  // profile fields — set during registration
   name: { type: DataTypes.STRING, allowNull: true },
+  surname: { type: DataTypes.STRING, allowNull: true },
   username: { type: DataTypes.STRING, allowNull: true },
   avatar_img: { type: DataTypes.STRING, allowNull: true },
   refresh_token: { type: DataTypes.STRING, allowNull: true },

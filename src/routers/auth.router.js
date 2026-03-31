@@ -21,28 +21,31 @@ const authController = require("../controllers/auth.controller");
  *           schema:
  *             type: object
  *             required:
- *               - phone_num
+ *               - name
+ *               - surname
  *               - email
+ *               - phone_num
  *               - password
  *               - confirm_password
- *               - role
  *             properties:
- *               phone_num:
+ *               name:
  *                 type: string
- *                 example: "99361234567"
+ *                 example: "Kakajan"
+ *               surname:
+ *                 type: string
+ *                 example: "Dovranov"
  *               email:
  *                 type: string
- *                 example: "test@gmail.com"
+ *                 example: "john@gmail.com"
+ *               phone_num:
+ *                 type: string
+ *                 example: "+99361234567"
  *               password:
  *                 type: string
- *                 example: "123456"
+ *                 example: "secret123"
  *               confirm_password:
  *                 type: string
- *                 example: "123456"
- *               role:
- *                 type: string
- *                 enum: [user, instructor, admin]
- *                 example: "user"
+ *                 example: "secret123"
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -53,6 +56,8 @@ const authController = require("../controllers/auth.controller");
  *               properties:
  *                 accessToken:
  *                   type: string
+ *                 refreshToken:
+ *                   type: string
  *                 user:
  *                   type: object
  *       400:
@@ -62,9 +67,9 @@ router.post("/register", authController.register);
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/auth/register-admin:
  *   post:
- *     summary: Login user
+ *     summary: Register a new ADMIN user (special endpoint)
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -73,15 +78,63 @@ router.post("/register", authController.register);
  *           schema:
  *             type: object
  *             required:
+ *               - name
+ *               - surname
  *               - email
+ *               - phone_num
  *               - password
+ *               - confirm_password
  *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Kakajan"
+ *               surname:
+ *                 type: string
+ *                 example: "Dovranov"
  *               email:
  *                 type: string
- *                 example: "test@gmail.com"
+ *                 example: "admin@gmail.com"
+ *               phone_num:
+ *                 type: string
+ *                 example: "+99361122334"
  *               password:
  *                 type: string
- *                 example: "123456"
+ *                 example: "secret123"
+ *               confirm_password:
+ *                 type: string
+ *                 example: "secret123"
+ *     responses:
+ *       201:
+ *         description: Admin user registered successfully
+ *       400:
+ *         description: Validation error or user already exists
+ */
+router.post("/register-admin", authController.registerAdmin);
+
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login user (email or phone number)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - identifier
+ *               - password
+ *             properties:
+ *               identifier:
+ *                 type: string
+ *                 description: Email address or phone number
+ *                 example: "john@gmail.com or +99361234567"
+ *               password:
+ *                 type: string
+ *                 example: "secret123"
  *     responses:
  *       200:
  *         description: Login successful

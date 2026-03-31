@@ -10,31 +10,37 @@ const {
 class AuthService {
 
     async register(data) {
-        const { phone_num, email, password, confirm_password, role } = data;
+        const { name, surname, email, phone_num, password, confirm_password } = data;
 
         // validate required fields
-        if (!phone_num || !email || !password || !confirm_password || !role) {
-            throw new Error("Missing required fields: phone_num, email, password, role");
+        if (!name || !surname || !email || !phone_num || !password || !confirm_password) {
+            throw new Error("Missing required fields: name, surname, email, phone_num, password, confirm_password");
         }
 
-        //  check if passwords match
+        // check if passwords match
         if (password !== confirm_password) {
             throw new Error("Passwords do not match");
         }
 
-        // check if user already exists
-        const existingUser = await User.findOne({ where: { email } });
-        if (existingUser) throw new Error("User already exists");
+        // check if phone number already exists
+        const existingByPhone = await User.findOne({ where: { phone_num } });
+        if (existingByPhone) throw new Error("User with this phone number already exists");
+
+        // check if email already exists
+        const existingByEmail = await User.findOne({ where: { email } });
+        if (existingByEmail) throw new Error("User with this email already exists");
 
         // hash password
         const hashed = await hashPassword(password);
 
-        // create user with minimal fields
+        // create user
         const user = await User.create({
-            phone_num,
+            name,
+            surname,
             email,
+            phone_num,
             password: hashed,
-            role
+            role: "user"
         });
 
         // generate tokens
@@ -50,8 +56,61 @@ class AuthService {
         };
     }
 
-    async login(email, password) {
-        const user = await User.findOne({ where: { email } });
+    async registerAdmin(data) {
+        const { name, surname, email, phone_num, password, confirm_password } = data;
+
+        // validate required fields
+        if (!name || !surname || !email || !phone_num || !password || !confirm_password) {
+            throw new Error("Missing required fields: name, surname, email, phone_num, password, confirm_password");
+        }
+
+        // check if passwords match
+        if (password !== confirm_password) {
+            throw new Error("Passwords do not match");
+        }
+
+        // check if phone number already exists
+        const existingByPhone = await User.findOne({ where: { phone_num } });
+        if (existingByPhone) throw new Error("User with this phone number already exists");
+
+        // check if email already exists
+        const existingByEmail = await User.findOne({ where: { email } });
+        if (existingByEmail) throw new Error("User with this email already exists");
+
+        // hash password
+        const hashed = await hashPassword(password);
+
+        // create admin user
+        const user = await User.create({
+            name,
+            surname,
+            email,
+            phone_num,
+            password: hashed,
+            role: "admin"
+        });
+
+        // generate tokens
+        const accessToken = generateAccessToken({ id: user.id, role: user.role });
+        const refreshToken = generateRefreshToken({ id: user.id });
+        user.refresh_token = refreshToken;
+        await user.save();
+
+        return {
+            user: userResponseDTO(user),
+            accessToken,
+            refreshToken
+        };
+    }
+
+    async login(identifier, password) {
+        // auto-detect: if identifier contains '@' treat as email, else as phone_num
+        const isEmail = identifier.includes("@");
+        const whereClause = isEmail
+            ? { email: identifier }
+            : { phone_num: identifier };
+
+        const user = await User.findOne({ where: whereClause });
         if (!user) throw new Error("Invalid credentials");
 
         const isMatch = await comparePassword(password, user.password);

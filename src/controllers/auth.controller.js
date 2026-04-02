@@ -15,7 +15,6 @@ exports.register = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
-
 //register admin
 exports.registerAdmin = async (req, res) => {
     try {

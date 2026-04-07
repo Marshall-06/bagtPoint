@@ -11,18 +11,17 @@ const getSwaggerOptions = () => ({
     },
     servers: [
       {
+        url: "/", 
+        description: "Current Host (Auto-detect)"
+      },
+      {
         url: "https://bagt-point.onrender.com",
         description: "Production server",
       },
       {
-        // Use the current process port or default to 5000
         url: `http://localhost:${process.env.PORT || 5000}`,
         description: "Local development server",
-      },
-      {
-        url: `http://${process.env.LOCAL_IP || 'localhost'}:${process.env.PORT || 5000}`,
-        description: "Local network server",
-      },
+      }
     ],
     components: { 
       securitySchemes: {

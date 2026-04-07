@@ -11,10 +11,6 @@ const getSwaggerOptions = () => ({
     },
     servers: [
       {
-        url: "/", 
-        description: "Current Host (Auto-detect)"
-      },
-      {
         url: "https://bagt-point.onrender.com",
         description: "Production server",
       },

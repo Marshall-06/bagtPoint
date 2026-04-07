@@ -7,16 +7,14 @@ const port = process.env.PORT || 5000
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("../src/config/swagger");
 
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+}))
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
-
-//  add this before all routes
-app.use(cors({
-  origin: "*", // allow all origins
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}))
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 

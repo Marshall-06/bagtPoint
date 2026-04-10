@@ -36,39 +36,39 @@
 
 
 
-const swaggerJsdoc = require("swagger-jsdoc");
+  const swaggerJsdoc = require("swagger-jsdoc");
 
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "bagtPoint API", // Updated title
-      version: "1.0.0",
-      description: "bagtPoint API documentation",
+  const options = {
+    definition: {
+      openapi: "3.0.0",
+      info: {
+        title: "EDUmix API",
+        version: "1.0.0",
+        description: "EDUmix API documentation",
+      },
+      servers: [
+    {
+      //  production first — Render Swagger will use this
+      url: "https://bagtpoint.onrender.com",
+      description: "Production server",
     },
-    servers: [
-      {
-        // ALWAYS put the HTTPS production URL first for Render
-        url: "https://bagt-point.onrender.com", 
-        description: "Production server",
-      },
-      {
-        url: "http://localhost:5000",
-        description: "Local server",
-      },
-    ],
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
+    {
+      url: "http://localhost:5000",
+      description: "Local server",
+    },
+  ],
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            type: "http",
+            scheme: "bearer",
+            bearerFormat: "JWT",
+          },
         },
       },
     },
-  },
-  // Ensure this matches your folder structure exactly
-  apis: ["./src/routers/*.js"], 
-};
+    //  fixed path — your routers are in src/routers not routes
+    apis: ["./src/routers/*.js"],
+  };
 
-module.exports = swaggerJsdoc(options);
+  module.exports = swaggerJsdoc(options);

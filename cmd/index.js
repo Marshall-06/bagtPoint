@@ -8,14 +8,10 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("../src/config/swagger");
 
 app.use(cors({
-  origin: true,
-  credentials: true,
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept", "Origin"]
-}));
-
-app.options("*", cors());
-
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
+}))
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -37,7 +33,7 @@ app.get('/', (req, res) => {
 
 // only starts the server locally
 // on Vercel, it does NOT call app.listen() — Vercel handles that itself
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, () => {
   console.log(`Server running on port ${port}`)
 })
 

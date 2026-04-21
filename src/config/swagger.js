@@ -5,13 +5,14 @@ const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "bagtPoint API",
+      title: "bagtPoint API", // Updated title
       version: "1.0.0",
       description: "bagtPoint API documentation",
     },
     servers: [
       {
-        url: "https://bagt-point.onrender.com",
+        // ALWAYS put the HTTPS production URL first for Render
+        url: "https://bagtpoint.onrender.com", 
         description: "Production server",
       },
       {
@@ -29,8 +30,8 @@ const options = {
       },
     },
   },
-  // Using path.join prevents "File not found" errors on Render/Linux
-  apis: [path.join(__dirname, "../routers/*.js")], 
+  // Ensure this matches your folder structure exactly
+  apis: ["./src/routers/*.js"], 
 };
 
 module.exports = swaggerJsdoc(options);

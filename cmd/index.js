@@ -20,13 +20,6 @@ app.use(cors({
   credentials: true
 }));
 
-// Handle Pre-flight (Fixes many "Failed to fetch" errors)
-app.use((req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  next();
-});
 
 // 4. Routes
 app.use("/api/auth", require("../src/routers/auth.router"));

@@ -114,6 +114,52 @@ router.post("/register-admin", authController.registerAdmin);
 
 /**
  * @swagger
+ * /api/auth/register-owner:
+ *   post:
+ *     summary: Register a new OWNER user (special endpoint)
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - surname
+ *               - email
+ *               - phone_num
+ *               - password
+ *               - confirm_password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Kakajan"
+ *               surname:
+ *                 type: string
+ *                 example: "Dovranov"
+ *               email:
+ *                 type: string
+ *                 example: "owner@gmail.com"
+ *               phone_num:
+ *                 type: string
+ *                 example: "+99361122334"
+ *               password:
+ *                 type: string
+ *                 example: "secret123"
+ *               confirm_password:
+ *                 type: string
+ *                 example: "secret123"
+ *     responses:
+ *       201:
+ *         description: Owner registered successfully
+ *       400:
+ *         description: Validation error or user already exists
+ */
+router.post("/register-owner", authController.registerOwner);
+
+/**
+ * @swagger
  * /api/auth/login:
  *   post:
  *     summary: Login user (email or phone number)

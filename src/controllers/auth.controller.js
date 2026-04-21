@@ -29,6 +29,21 @@ exports.registerAdmin = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+
+// register owner
+exports.registerOwner = async (req, res) => {
+    try {
+        const { user, accessToken } =
+            await authService.registerOwner(req.body);
+
+        res.status(201).json({
+            accessToken,
+            user: userResponseDTO(user)
+        });
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+};
 //login
 exports.login = async (req, res) => {
     try {

@@ -104,6 +104,35 @@ class AuthService {
         };
     }
 
+    async registerOwner(data) {
+    const { name, surname, email, phone_num, password, confirm_password } = data;
+
+    if (password !== confirm_password) {
+        throw new Error("Passwords do not match");
+    }
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) throw new Error("Email already in use");
+
+    const hashed = await bcrypt.hash(password, 10);
+
+    const user = await User.create({
+        name,
+        surname,
+        email,
+        phone_num,
+        password: hashed,
+        role: "owner",        // 👈 hardcoded, not taken from req.body
+    });
+
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    await Token.create({ token: refreshToken, userId: user.id });
+
+    return { user, accessToken, refreshToken };
+};
+
     async login(identifier, password) {
         // auto-detect: if identifier contains '@' treat as email, else as phone_num
         const isEmail = identifier.includes("@");

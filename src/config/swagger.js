@@ -1,4 +1,5 @@
 const swaggerJsdoc = require("swagger-jsdoc");
+const path = require("path");
 
 const options = {
   definition: {
@@ -27,9 +28,9 @@ const options = {
         },
       },
     },
-    schemes: ["https", "http"],
   },
-  apis: ["./src/routers/*.js"],
+  // Using path.join prevents "File not found" errors on Render/Linux
+  apis: [path.join(__dirname, "../routers/*.js")], 
 };
 
 module.exports = swaggerJsdoc(options);

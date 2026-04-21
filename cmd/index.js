@@ -1,27 +1,38 @@
-const express = require("express")
-const app = express()
-const sequelize = require('../src/config/db');
-const cors = require("cors")
-require("dotenv").config()
-const port = process.env.PORT || 5000
+const express = require("express");
+const app = express();
+const sequelize = require('../src/config/db'); 
+const cors = require("cors");
+require("dotenv").config();
+
+const port = process.env.PORT || 5000;
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("../src/config/swagger");
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+// 1. Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// 2. Optimized CORS for Render
 app.use(cors({
-  origin: "*",
+  origin: "*", 
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
-}))
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  credentials: true
+}));
 
-// auth
-app.use("/api/auth", require("../src/routers/auth.router"))
+// Handle Pre-flight (Fixes many "Failed to fetch" errors)
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
 
-
+// 4. Routes
+app.use("/api/auth", require("../src/routers/auth.router"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`)
-})
+// 5. Start Server
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on port ${port}`);
+});

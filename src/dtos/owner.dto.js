@@ -1,6 +1,4 @@
-const { refresh } = require("../services/auth.service");
-
-exports.adminResponseDTO = (user) => {
+exports.ownerResponseDTO = (user) => {
     if (!user) return null;
 
     return {

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const authController = require("../controllers/auth.controller");
+const { uploadAvatar } = require("../middlewares/upload.middleware");   
 
 /**
  * @swagger
@@ -111,7 +112,6 @@ router.post("/register", authController.register);
  */
 router.post("/register-admin", authController.registerAdmin);
 
-
 /**
  * @swagger
  * /api/auth/register-owner:
@@ -121,7 +121,7 @@ router.post("/register-admin", authController.registerAdmin);
  *     requestBody:
  *       required: true
  *       content:
- *         application/json:
+ *         multipart/form-data:
  *           schema:
  *             type: object
  *             required:
@@ -150,13 +150,53 @@ router.post("/register-admin", authController.registerAdmin);
  *               confirm_password:
  *                 type: string
  *                 example: "secret123"
+ *               avatar_img:
+ *                 type: string
+ *                 format: binary
+ *                 description: Owner profile picture (JPG, PNG, WEBP — max 5MB)
  *     responses:
  *       201:
  *         description: Owner registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                   example: "eyJhbGciOiJIUzI1NiIsInR5..."
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                       example: 1
+ *                     name:
+ *                       type: string
+ *                       example: "Kakajan"
+ *                     email:
+ *                       type: string
+ *                       example: "owner@gmail.com"
+ *                     role:
+ *                       type: string
+ *                       example: "owner"
+ *                     phone_num:
+ *                       type: string
+ *                       example: "+99361122334"
+ *                     avatar_img:
+ *                       type: string
+ *                       nullable: true
+ *                       example: "uploads/avatars/avatar-1714900000000.jpg"
+ *                     created_at:
+ *                       type: string
+ *                       format: date-time
+ *                     updated_at:
+ *                       type: string
+ *                       format: date-time
  *       400:
  *         description: Validation error or user already exists
  */
-router.post("/register-owner", authController.registerOwner);
+router.post("/register-owner", uploadAvatar, authController.registerOwner);
 
 /**
  * @swagger

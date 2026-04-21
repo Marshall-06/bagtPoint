@@ -11,6 +11,8 @@ const swaggerSpec = require("../src/config/swagger");
 // 1. Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static("uploads"));
+
 
 // 2. Optimized CORS for Render
 app.use(cors({

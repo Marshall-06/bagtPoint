@@ -105,33 +105,48 @@ class AuthService {
     }
 
     async registerOwner(data) {
-    const { name, surname, email, phone_num, password, confirm_password } = data;
+    const { name, surname, email, phone_num, password, confirm_password, avatar_img } = data;
 
+    // validate required fields
+    if (!name || !surname || !email || !phone_num || !password || !confirm_password) {
+        throw new Error("Missing required fields: name, surname, email, phone_num, password, confirm_password");
+    }
+
+    // check if passwords match
     if (password !== confirm_password) {
         throw new Error("Passwords do not match");
     }
 
-    const existing = await User.findOne({ where: { email } });
-    if (existing) throw new Error("Email already in use");
+    // check if phone number already exists
+    const existingByPhone = await User.findOne({ where: { phone_num } });
+    if (existingByPhone) throw new Error("User with this phone number already exists");
 
-    const hashed = await bcrypt.hash(password, 10);
+    // check if email already exists
+    const existingByEmail = await User.findOne({ where: { email } });
+    if (existingByEmail) throw new Error("User with this email already exists");
 
+    // hash password — same as register/registerAdmin
+    const hashed = await hashPassword(password);
+
+    // create owner user
     const user = await User.create({
         name,
         surname,
         email,
         phone_num,
         password: hashed,
-        role: "owner",        // 👈 hardcoded, not taken from req.body
+        role: "owner",
+        avatar_img: avatar_img ?? null,
     });
 
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-
-    await Token.create({ token: refreshToken, userId: user.id });
+    // generate tokens — same pattern as register/registerAdmin
+    const accessToken = generateAccessToken({ id: user.id, role: user.role });
+    const refreshToken = generateRefreshToken({ id: user.id });
+    user.refresh_token = refreshToken;
+    await user.save();
 
     return { user, accessToken, refreshToken };
-};
+}
 
     async login(identifier, password) {
         // auto-detect: if identifier contains '@' treat as email, else as phone_num

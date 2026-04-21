@@ -1,5 +1,6 @@
 const authService = require("../services/auth.service");
 const { userResponseDTO } = require("../dtos/user.dto");
+const { ownerResponseDTO } = require("../dtos/owner.dto");
 
 //register
 exports.register = async (req, res) => {
@@ -33,12 +34,17 @@ exports.registerAdmin = async (req, res) => {
 // register owner
 exports.registerOwner = async (req, res) => {
     try {
-        const { user, accessToken } =
-            await authService.registerOwner(req.body);
+        const avatar_img = req.file?.path ?? null; // ✅ from multer
+
+        const { user, accessToken, refreshToken } = await authService.registerOwner({
+            ...req.body,
+            avatar_img,
+        });
 
         res.status(201).json({
             accessToken,
-            user: userResponseDTO(user)
+            refreshToken,  // ✅ was missing
+            user: ownerResponseDTO(user),
         });
     } catch (err) {
         res.status(400).json({ message: err.message });

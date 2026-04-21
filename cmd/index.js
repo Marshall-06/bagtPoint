@@ -29,7 +29,8 @@ app.use("/api/categories", require("../src/routers/category.router"))
 // Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// 5. Start Server
+
+
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server running on port ${port}`);
 });

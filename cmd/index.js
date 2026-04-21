@@ -23,6 +23,10 @@ app.use(cors({
 
 // 4. Routes
 app.use("/api/auth", require("../src/routers/auth.router"));
+// categories
+app.use("/api/categories", require("../src/routers/category.router"))
+
+// Swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // 5. Start Server
